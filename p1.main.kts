@@ -130,4 +130,22 @@ fun unoCardToString(card: UnoCard): String {
     }
 }
 
-fun StringToUn
+fun stringToUnoCard(s: String): UnoCard? {
+    val parts = s.split("|")
+    return if (parts.size == 2) {
+        val type = UnoType.fromString(parts[0])
+        val color = UnoColor.fromString(parts[1])
+        if (type != null && color != null) {
+            return UnoCard(type, color)
+        } else {
+            return null
+        }
+    } else {
+        val type = UnoType.fromString(parts[0])
+        if (type != null) {
+            return UnoCard(type, UnoColor.NONE)
+        } else{
+            return null
+        }
+    }
+} 
