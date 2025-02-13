@@ -10,17 +10,15 @@ enum class UnoColor {
         BLUE -> "blue"
         NONE -> "none"
     }
+}
 
-    companion object {
-        fun fromString(s: String): UnoColor? = when (s.lowercase()) {
-            "red" -> RED
-            "yellow" -> YELLOW
-            "green" -> GREEN
-            "blue" -> BLUE
-            "none" -> NONE
-            else -> null
-        }
-    }
+fun UnoColor.fromString(s: String): UnoColor? = when (s.lowercase()) {
+    "red" -> UnoColor.RED
+    "yellow" -> UnoColor.YELLOW
+    "green" -> UnoColor.GREEN
+    "blue" -> UnoColor.BLUE
+    "none" -> UnoColor.NONE
+    else -> null
 }
 
 enum class UnoType {
@@ -48,27 +46,25 @@ enum class UnoType {
         WILD -> "wild"
         WILD_DRAW_FOUR -> "wild-draw-four"
     }
+}
 
-    companion object {
-        fun fromString(s: String): UnoType? = when (s.lowercase()) {
-            "0" -> ZERO
-            "1" -> ONE
-            "2" -> TWO
-            "3" -> THREE
-            "4" -> FOUR
-            "5" -> FIVE
-            "6" -> SIX
-            "7" -> SEVEN
-            "8" -> EIGHT
-            "9" -> NINE
-            "skip" -> SKIP
-            "plus-two", "draw two" -> DRAW_TWO
-            "reverse" -> REVERSE
-            "wild" -> WILD
-            "wild-draw-four", "wild draw four" -> WILD_DRAW_FOUR
-            else -> null
-        }
-    }
+fun UnoType.fromString(s: String): UnoType? = when (s.lowercase()) {
+    "0" -> UnoType.ZERO
+    "1" -> UnoType.ONE
+    "2" -> UnoType.TWO
+    "3" -> UnoType.THREE
+    "4" -> UnoType.FOUR
+    "5" -> UnoType.FIVE
+    "6" -> UnoType.SIX
+    "7" -> UnoType.SEVEN
+    "8" -> UnoType.EIGHT
+    "9" -> UnoType.NINE
+    "skip" -> UnoType.SKIP
+    "plus-two", "draw two" -> UnoType.DRAW_TWO
+    "reverse" -> UnoType.REVERSE
+    "wild" -> UnoType.WILD
+    "wild-draw-four", "wild draw four" -> UnoType.WILD_DRAW_FOUR
+    else -> null
 }
 
 data class UnoCard(val type: UnoType, val color: UnoColor)
@@ -112,10 +108,17 @@ class UnoDeck {
             cards.add(UnoCard(UnoType.REVERSE, color))
             cards.add(UnoCard(UnoType.REVERSE, color))
         }
-        // I now add wild cards (with color "NONE", which basically wild cards)
-        repeat(4) {
-            cards.add(UnoCard(UnoType.WILD, UnoColor.NONE))
-            cards.add(UnoCard(UnoType.WILD_DRAW_FOUR, UnoColor.NONE))
-        }
+        // Add wild cards (with color "NONE", which basically wild cards)
+        val wildCards = listOf(
+            UnoCard(UnoType.WILD, UnoColor.NONE),
+            UnoCard(UnoType.WILD, UnoColor.NONE),
+            UnoCard(UnoType.WILD, UnoColor.NONE),
+            UnoCard(UnoType.WILD, UnoColor.NONE),
+            UnoCard(UnoType.WILD_DRAW_FOUR, UnoColor.NONE),
+            UnoCard(UnoType.WILD_DRAW_FOUR, UnoColor.NONE),
+            UnoCard(UnoType.WILD_DRAW_FOUR, UnoColor.NONE),
+            UnoCard(UnoType.WILD_DRAW_FOUR, UnoColor.NONE)
+        )
+        cards.addAll(wildCards)
     }
 }
