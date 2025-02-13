@@ -74,63 +74,60 @@ val exampleCard1 = UnoCard(UnoType.THREE, UnoColor.YELLOW)
 val exampleCard2 = UnoCard(UnoType.DRAW_TWO, UnoColor.GREEN)
 val exampleCard3 = UnoCard(UnoType.WILD, UnoColor.NONE)
 
-/*
-for uno deck data class
-fun createCardDeck(){
-    instantiate a mutable list that represents the card deck
-    
-    iterate 0 - 9 for base cards -> each color 
-    iterate through the special cards, "skips, wild" 
+fun createUnoDeck(): MutableList<UnoCard> {
+    val deck = mutableListOf<UnoCard>()
+    val colors = listOf(UnoColor.RED, UnoColor.YELLOW, UnoColor.GREEN, UnoColor.BLUE)
 
-    return mutable list
-}
-*/
-
-class UnoDeck {
-    val cards: MutableList<UnoCard> = mutableListOf()
-
-    init {
-        // For each of the four colors, I add the 25 cards.
-        val colors = listOf(UnoColor.RED, UnoColor.YELLOW, UnoColor.GREEN, UnoColor.BLUE)
-        for (color in colors) {
-            // One 0 card per color.
-            cards.add(UnoCard(UnoType.ZERO, color))
-            // Two copies of each number card 1-9.
-            for (i in 1..9) {
-                val type = when (i) {
-                    1 -> UnoType.ONE
-                    2 -> UnoType.TWO
-                    3 -> UnoType.THREE
-                    4 -> UnoType.FOUR
-                    5 -> UnoType.FIVE
-                    6 -> UnoType.SIX
-                    7 -> UnoType.SEVEN
-                    8 -> UnoType.EIGHT
-                    9 -> UnoType.NINE
-                    else -> throw IllegalStateException("Unexpected number")
-                }
-                cards.add(UnoCard(type, color))
-                cards.add(UnoCard(type, color))
+    for (color in colors) {
+        for (i in 0..9) {
+            val type = when (i) {
+                0 -> UnoType.ZERO
+                1 -> UnoType.ONE
+                2 -> UnoType.TWO
+                3 -> UnoType.THREE
+                4 -> UnoType.FOUR
+                5 -> UnoType.FIVE
+                6 -> UnoType.SIX
+                7 -> UnoType.SEVEN
+                8 -> UnoType.EIGHT
+                else -> UnoType.NINE
             }
-            // Two copies of each action card: Skip, Draw Two, Reverse.
-            cards.add(UnoCard(UnoType.SKIP, color))
-            cards.add(UnoCard(UnoType.SKIP, color))
-            cards.add(UnoCard(UnoType.DRAW_TWO, color))
-            cards.add(UnoCard(UnoType.DRAW_TWO, color))
-            cards.add(UnoCard(UnoType.REVERSE, color))
-            cards.add(UnoCard(UnoType.REVERSE, color))
+            deck.add(UnoCard(type, color))
         }
-        // Add wild cards (with color "NONE", which basically wild cards)
-        val wildCards = listOf(
-            UnoCard(UnoType.WILD, UnoColor.NONE),
-            UnoCard(UnoType.WILD, UnoColor.NONE),
-            UnoCard(UnoType.WILD, UnoColor.NONE),
-            UnoCard(UnoType.WILD, UnoColor.NONE),
-            UnoCard(UnoType.WILD_DRAW_FOUR, UnoColor.NONE),
-            UnoCard(UnoType.WILD_DRAW_FOUR, UnoColor.NONE),
-            UnoCard(UnoType.WILD_DRAW_FOUR, UnoColor.NONE),
-            UnoCard(UnoType.WILD_DRAW_FOUR, UnoColor.NONE)
-        )
-        cards.addAll(wildCards)
+
+        deck.add(UnoCard(UnoType.SKIP, color))
+        deck.add(UnoCard(UnoType.SKIP, color))
+        deck.add(UnoCard(UnoType.DRAW_TWO, color))
+        deck.add(UnoCard(UnoType.DRAW_TWO, color))
+        deck.add(UnoCard(UnoType.REVERSE, color))
+        deck.add(UnoCard(UnoType.REVERSE, color))
+    }
+
+    val wildCards = listOf(
+        UnoCard(UnoType.WILD, UnoColor.NONE),
+        UnoCard(UnoType.WILD, UnoColor.NONE),
+        UnoCard(UnoType.WILD, UnoColor.NONE),
+        UnoCard(UnoType.WILD, UnoColor.NONE),
+        UnoCard(UnoType.WILD_DRAW_FOUR, UnoColor.NONE),
+        UnoCard(UnoType.WILD_DRAW_FOUR, UnoColor.NONE),
+        UnoCard(UnoType.WILD_DRAW_FOUR, UnoColor.NONE),
+        UnoCard(UnoType.WILD_DRAW_FOUR, UnoColor.NONE)
+    )
+    deck.addAll(wildCards)
+
+    return deck
+}
+
+data class UnoDeck{
+    MutableListOf = createUnoDeck()
+}
+
+fun unoCardToString(card: UnoCard): String {
+    return if (card.color == UnoColor.NONE) {
+        card.type.toString()
+    } else {
+        "${card.type}|${card.color}"
     }
 }
+
+fun StringToUn
