@@ -148,4 +148,38 @@ fun stringToUnoCard(s: String): UnoCard? {
             return null
         }
     }
-} 
+}
+
+fun readUnoCardsFile(path: String): List<UnoCard> {
+    return if (fileExists(path)) {
+        fileReadAsList(path).map { stringToUnoCard(it) }
+    } else {
+        emptyList()
+    }
+}
+
+fun isCompleteUnoDeck(deck: List<UnoCard>): Boolean {
+    val expectedCardCount = mapOf(
+        CardType.ZERO to 4,
+        CardType.ONE to 8,
+        CardType.TWO to 8,
+        CardType.THREE to 8,
+        CardType.FOUR to 8,
+        CardType.FIVE to 8,
+        CardType.SIX to 8,
+        CardType.SEVEN to 8,
+        CardType.EIGHT to 8,
+        CardType.NINE to 8,
+        CardType.SKIP to 8,
+        CardType.DRAW_TWO to 8,
+        CardType.REVERSE to 8,
+        CardType.WILD to 4,
+        CardType.WILD_DRAW_FOUR to 4
+    )
+        cards.size == expectedCardCount[type]
+    }
+}
+
+fun shuffleUnoDeck(deck: MutableList<UnoCard>) {
+    deck.shuffle()
+}
