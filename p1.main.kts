@@ -74,6 +74,18 @@ val exampleCard1 = UnoCard(UnoType.THREE, UnoColor.YELLOW)
 val exampleCard2 = UnoCard(UnoType.DRAW_TWO, UnoColor.GREEN)
 val exampleCard3 = UnoCard(UnoType.WILD, UnoColor.NONE)
 
+/*
+for uno deck data class
+fun createCardDeck(){
+    instantiate a mutable list that represents the card deck
+    
+    iterate 0 - 9 for base cards -> each color 
+    iterate through the special cards, "skips, wild" 
+
+    return mutable list
+}
+*/
+
 class UnoDeck {
     val cards: MutableList<UnoCard> = mutableListOf()
 
