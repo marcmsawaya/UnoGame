@@ -159,27 +159,46 @@ fun readUnoCardsFile(path: String): List<UnoCard> {
 }
 
 fun isCompleteUnoDeck(deck: List<UnoCard>): Boolean {
-    val expectedCardCount = mapOf(
-        CardType.ZERO to 4,
-        CardType.ONE to 8,
-        CardType.TWO to 8,
-        CardType.THREE to 8,
-        CardType.FOUR to 8,
-        CardType.FIVE to 8,
-        CardType.SIX to 8,
-        CardType.SEVEN to 8,
-        CardType.EIGHT to 8,
-        CardType.NINE to 8,
-        CardType.SKIP to 8,
-        CardType.DRAW_TWO to 8,
-        CardType.REVERSE to 8,
-        CardType.WILD to 4,
-        CardType.WILD_DRAW_FOUR to 4
-    )
-        cards.size == expectedCardCount[type]
+    if (deck.size != 108) return false
+
+    val expected = mutableMapOf<UnoCard, Int>()
+    val colors = listOf("Red", "Blue", "Green", "Yellow")
+
+    for (color in colors) {
+        expected[Card(color, "0")] = 1
+        for (n in 1..9) {
+            expected[Card(color, n.toString())] = 2
+        }
+        for (action in listOf("Skip", "Reverse", "Draw Two")) {
+            expected[Card(color, action)] = 2
+        }
     }
+
+    expected[Card(null, "Wild")] = 4
+    expected[Card(null, "Wild Draw Four")] = 4
+
+    val actual = deck.groupingBy { it }.eachCount()
+
+    return expected == actual
 }
 
 fun shuffleUnoDeck(deck: MutableList<UnoCard>) {
     deck.shuffle()
+}
+
+fun dealUnoCards(deck: UnoDeck, n: Int): List<UnoCard> {
+    if (n < 1 || n > deck.cards.size) {
+        return emptyList()
+    }
+
+    val hand = deck.cards.take(n)
+    deck.cards = deck.cards.drop(n).toMutableList()
+    return hand
+}
+
+fun isValidPlay(playerCard: UnoCard, topCard: UnoCard): Boolean {
+    return (playerCard.color == topCard.color) ||
+           (playerCard.type == topCard.type) ||
+           (playerCard.type == UnoType.WILD) ||
+           (playerCard.type == UnoType.WILD_DRAW_FOUR)
 }
