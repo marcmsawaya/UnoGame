@@ -17,8 +17,7 @@ fun UnoColor.fromString(s: String): UnoColor? = when (s.lowercase()) {
     "yellow" -> UnoColor.YELLOW
     "green" -> UnoColor.GREEN
     "blue" -> UnoColor.BLUE
-    "none" -> UnoColor.NONE
-    else -> null
+    else -> UnoColor.NONE
 }
 
 enum class UnoType {
@@ -63,8 +62,7 @@ fun UnoType.fromString(s: String): UnoType? = when (s.lowercase()) {
     "plus-two", "draw two" -> UnoType.DRAW_TWO
     "reverse" -> UnoType.REVERSE
     "wild" -> UnoType.WILD
-    "wild-draw-four", "wild draw four" -> UnoType.WILD_DRAW_FOUR
-    else -> null
+    else -> UnoType.WILD_DRAW_FOUR
 }
 
 data class UnoCard(val type: UnoType, val color: UnoColor)
@@ -118,7 +116,7 @@ fun createUnoDeck(): MutableList<UnoCard> {
     return deck
 }
 
-data class UnoDeck(var cards: MutableListOf = createUnoDeck())
+data class UnoDeck(val cards: MutableList<UnoCard> = createUnoDeck())
 
 fun unoCardToString(card: UnoCard): String {
     return if (card.color == UnoColor.NONE) {
@@ -190,7 +188,7 @@ fun dealUnoCards(deck: UnoDeck, n: Int): List<UnoCard> {
     }
 
     val hand = deck.cards.take(n)
-    deck.cards = deck.cards.drop(n).toMutableList()
+    deck.cards = MutableList(deck.cards.size - n) { deck.cards[it + n] }
     return hand
 }
 
@@ -205,7 +203,8 @@ fun main() {
     val deck = UnoDeck()
     shuffleUnoDeck(deck.cards)
     val hand = dealUnoCards(deck, 7)
-    val topCard = deck.cards.removeAt(0)
+    val topCard = deck.cards.first()
+    deck.cards = MutableList(deck.cards.size - 1) { deck.cards[it + 1] }
 
     println("Top card: ${unoCardToString(topCard)}")
     println("Hand: ${hand.map { unoCardToString(it) }}")
