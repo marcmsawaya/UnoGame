@@ -1,7 +1,7 @@
 import khoury.* // I'm importing khoury library
 
 enum class UnoColor {
-    RED, YELLOW, GREEN, BLUE, NONE;  // NONE for wild cards
+    RED, YELLOW, GREEN, BLUE, NONE;  // NB : The NONE color is for wild cards
 
     override fun toString(): String = when (this) {
         RED -> "red"
@@ -118,9 +118,7 @@ fun createUnoDeck(): MutableList<UnoCard> {
     return deck
 }
 
-data class UnoDeck{
-    MutableListOf = createUnoDeck()
-}
+data class UnoDeck(var cards: MutableListOf = createUnoDeck())
 
 fun unoCardToString(card: UnoCard): String {
     return if (card.color == UnoColor.NONE) {
@@ -201,4 +199,15 @@ fun isValidPlay(playerCard: UnoCard, topCard: UnoCard): Boolean {
            (playerCard.type == topCard.type) ||
            (playerCard.type == UnoType.WILD) ||
            (playerCard.type == UnoType.WILD_DRAW_FOUR)
+}
+
+fun main() {
+    val deck = UnoDeck()
+    shuffleUnoDeck(deck.cards)
+    val hand = dealUnoCards(deck, 7)
+    val topCard = deck.cards.removeAt(0)
+
+    println("Top card: ${unoCardToString(topCard)}")
+    println("Hand: ${hand.map { unoCardToString(it) }}")
+    println("Deck size: ${deck.cards.size}")
 }
