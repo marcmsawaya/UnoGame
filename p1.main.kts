@@ -180,6 +180,7 @@ fun isCompleteUnoDeck(deck: List<UnoCard>): Boolean {
 
 fun shuffleUnoDeck(deck: MutableList<UnoCard>) {
     deck.shuffle()
+    return deck
 }
 
 fun dealUnoCards(deck: UnoDeck, n: Int): List<UnoCard> {
