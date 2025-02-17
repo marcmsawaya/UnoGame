@@ -1,14 +1,14 @@
 // First and foremost, I import the khoury library.
 
 import khoury.CapturedResult
-import khoury.EnabledTest
 import khoury.captureResults
+import khoury.EnabledTest
+import khoury.runEnabledTests
+import khoury.testSame
 import khoury.fileExists
 import khoury.fileReadAsList
 import khoury.input
 import khoury.reactConsole
-import khoury.runEnabledTests
-import khoury.testSame
 
 // Step 1 : Now, to start things off, I create the UnoColor enum class which contains all the possible colors of an UnoDeck.
 
@@ -18,8 +18,7 @@ enum class UnoColor { RED, YELLOW, GREEN, BLUE, NONE }
 
 enum class UnoType {
     ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE,
-    SKIP, DRAW_TWO, REVERSE,
-    WILD, WILD_DRAW_FOUR
+    SKIP, DRAW_TWO, REVERSE, WILD, WILD_DRAW_FOUR
 }
 
 // Now that we have done both these enum classes, we can set up the UnoCard data class which has a unique type and a unique color.
@@ -35,7 +34,7 @@ val exampleCard3 = UnoCard(UnoType.WILD, UnoColor.NONE)
 
 // Step 2 : Now, it's time to create an deck.
 
-data class UnoDeck(val cards: List<UnoCard>)
+data class UnoDeck(val cards: MutableList<UnoCard>)
 /* Obviously, it's a list of uno cards. 
 However, we have not done anything yet, we need to create the cards, and then add them to the deck, so let's do a function first. */
 
@@ -145,8 +144,8 @@ fun stringToUnoCard(s: String): UnoCard {
     return UnoCard(typeVal, colorVal)
 }
 
-// (c) Read a file containing Uno cards (one per line) and return a List<UnoCard>.
-fun readUnoCardsFile(path: String): List<UnoCard> {
+// (c) Read a file containing Uno cards (one per line) and return a MutableList<UnoCard>).
+fun readUnoCardsFile(path: String): MutableList<UnoCard>) {
     if (!fileExists(path)) {
         return emptyList()
     }
@@ -160,7 +159,7 @@ fun readUnoCardsFile(path: String): List<UnoCard> {
 // ================================================================
 
 // (a) Determine if a given list of cards represents a complete Uno deck.
-fun isCompleteUnoDeck(cards: List<UnoCard>): Boolean {
+fun isCompleteUnoDeck(cards: MutableList<UnoCard>): Boolean {
     if (cards.size != 108) return false
     for (color in listOf(UnoColor.RED, UnoColor.YELLOW, UnoColor.GREEN, UnoColor.BLUE)) {
         if (cards.filter { it.color == color && it.type == UnoType.ZERO }.size != 1) return false
@@ -183,31 +182,19 @@ fun isCompleteUnoDeck(cards: List<UnoCard>): Boolean {
 }
 
 // A function to “shuffle” a deck; returns a new deck with shuffled cards.
-fun shuffleUnoDeck(deck: MutableList<UnoCard>) {
+fun shuffleUnoDeck(deck: MutableMutableList<UnoCard>)) {
     deck.shuffle()
     return deck
 }
 
-// (b) Deal N cards from the top of the deck without replacement.
-// Returns a Pair: the dealt hand and the new deck.
-fun dealUnoCards(deck: UnoDeck, n: Int): Pair<List<UnoCard>, UnoDeck> {
-    if (n < 1) throw IllegalArgumentException("Must deal at least one card")
-    if (n > deck.cards.size) throw IllegalStateException("Not enough cards in the deck")
-    val hand = deck.cards.take(n)
-    val newDeck = UnoDeck(deck.cards.drop(n))
-    return Pair(hand, newDeck)
-}
-
-// A helper function to deal one card.
-fun dealOneCard(deck: UnoDeck): Pair<UnoCard, UnoDeck> {
-    val (hand, newDeck) = dealUnoCards(deck, 1)
-    return Pair(hand[0], newDeck)
-}
-
-// A helper function to remove one occurrence of a card from a hand.
-fun removeOneCard(hand: List<UnoCard>, card: UnoCard): List<UnoCard> {
-    val index = hand.indexOf(card)
-    return if (index == -1) hand else hand.take(index) + hand.drop(index + 1)
+fun dealUnoCards(deck : UnoDeck, n:Int): MutableList<UnoCard> {
+    val hand = mutableListOf<UnoCard>()
+    for (i in 1..n) {
+        val card = deck.cards.first()
+        deck.cards.remove(card)
+        hand.add(card)
+    }
+    return hand
 }
 
 // (c) Determine if a play is valid.
@@ -222,7 +209,7 @@ fun isValidPlay(playerCard: UnoCard, topCard: UnoCard): Boolean {
 
 // (d) A helper function to draw cards until a valid card is found.
 // Returns a Triple: (the drawn card to play, the (unchanged) hand, and the new deck).
-fun drawUntilValid(hand: List<UnoCard>, deck: UnoDeck, topCard: UnoCard): Triple<UnoCard, List<UnoCard>, UnoDeck> {
+fun drawUntilValid(hand: MutableList<UnoCard>), deck: UnoDeck, topCard: UnoCard): Triple<UnoCard, MutableList<UnoCard>), UnoDeck> {
     if (deck.cards.isEmpty()) {
         throw IllegalStateException("Deck exhausted: no valid play possible")
     }
@@ -233,4 +220,17 @@ fun drawUntilValid(hand: List<UnoCard>, deck: UnoDeck, topCard: UnoCard): Triple
         // Add drawn card to hand and try again.
         drawUntilValid(hand + card, newDeck, topCard)
     }
+}
+
+// Step 5:
+
+fun play () {
+    val deck0 = createUnoDeck()
+
+    shuffleUnoDeck(deck0.cards)
+
+    val player1 = dealUnoCards(deck0, 7)
+    val player2 = dealUnoCards(deck0, 7)
+
+    val topCard = dealUnoCard(deck, 1)[0]
 }
