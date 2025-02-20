@@ -145,7 +145,7 @@ fun stringToUnoCard(s: String): UnoCard {
 }
 
 // (c) Read a file containing Uno cards (one per line) and return a MutableList<UnoCard>).
-fun readUnoCardsFile(path: String): MutableList<UnoCard>) {
+fun readUnoCardsFile(path: String): MutableList<UnoCard> {
     if (!fileExists(path)) {
         return emptyList()
     }
