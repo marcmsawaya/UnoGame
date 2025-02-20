@@ -113,7 +113,7 @@ fun unoCardToString(card: UnoCard): String {
 fun stringToUnoCard(s: String): UnoCard {
     val parts = s.split("|")
     if (parts.size != 2) {
-        throw IllegalArgumentException("Invalid card format: " + s)
+        return UnoCard(UnoType.WILD, UnoColor.NONE)
     }
     val typePart = parts[0].trim().lowercase()
     val colorPart = parts[1].trim().lowercase()
