@@ -38,7 +38,7 @@ data class UnoDeck(val cards: MutableList<UnoCard>)
 /* Obviously, it's a list of uno cards. 
 However, we have not done anything yet, we need to create the cards, and then add them to the deck, so let's do a function first. */
 
-fun createUnoDeck(): UnoDeck {
+fun createunodeck(): UnoDeck {
     val deckOfUno = mutableListOf<UnoCard>()
     // For each color suit (red, yellow, green, blue)
     for (color in listOf(UnoColor.RED, UnoColor.YELLOW, UnoColor.GREEN, UnoColor.BLUE)) {
@@ -150,8 +150,8 @@ fun readUnoCardsFile(path: String): MutableList<UnoCard> {
         return emptyList()
     }
     
-    val lines = fileReadAsList(cards.txt)
-    return lines.map { stringToUnoCard(it) }
+    val lines = fileReadAsList("cards.txt")
+    return lines.map { stringToUnoCard(it) }.toMutableList()
 }
 
 // ================================================================
@@ -202,7 +202,7 @@ fun dealUnoCards(deck : UnoDeck, n:Int): MutableList<UnoCard> {
 // A player's card is playable if it has the same color as the top card,
 // the same type, or if it is a wild card.
 fun isValidPlay(hand: MutableList<UnoCard>, deck: UnoDeck, topCard: UnoCard): Triple<UnoCard, MutableList<UnoCard>, UnoDeck> {
-    val (card, newDeck) = dealOneCard(deck)
+    val (card, newDeck) = dealUnoCards(deck)
     if ((card.color == topCard.color) ||
         (card.type == topCard.type) ||
         (card.type == UnoType.WILD) ||
@@ -210,19 +210,36 @@ fun isValidPlay(hand: MutableList<UnoCard>, deck: UnoDeck, topCard: UnoCard): Tr
         return Triple(card, hand, newDeck)
     } else {
         // Add the drawn card to the hand and try again.
-        return drawUntilValid(hand + card, newDeck, topCard)
+        return isValidPlay(hand + card, newDeck, topCard)
     }
 }
 
 
-fun SimulatePlayHand (active_player : UnoDeck, passive_player : UnoDeck, stack : UnoDeck) : Boolean {
-    if (isValidPlay(active_player, stack)){
-        stack.add(active_player)
+// fun SimulatePlayHand (active_player : UnoDeck, passive_player : UnoDeck, stack : UnoDeck) : Boolean {
+//     if (isValidPlay(active_player, stack)){
+//         stack.add(active_player)
+//         return true
+//     }
+//     else {
+//         return false
+//     }
+// }
+
+fun SimulatePlayHand(
+    activePlayer: MutableList<UnoCard>, 
+    opponent: MutableList<UnoCard>, 
+    deck: UnoDeck, 
+    stack: MutableList<UnoCard>
+): Boolean {
+    val topCard = stack.last()
+    val playableCard = activePlayer.find { isValidPlay(it, topCard) }
+    if (playableCard != null) {
+        activePlayer.remove(playableCard)
+        stack.add(playableCard)
+        // Handle special actions as needed
         return true
     }
-    else {
-        return false
-    }
+    return false
 }
 
 // Step 5:
@@ -287,13 +304,12 @@ fun play(): UnoDeck {
 
 
         // Check win condition
-        if (currentPlayer.isEmpty()) {
-            if (currentPlayer == player1) {
-                return UnoDeck(player1)
-            } else {
-                return UnoDeck(player2)
+        if (player1.isEmpty()) {
+            return UnoDeck(player1)
+        } else if (player2.isEmpty()) {
+            return UnoDeck(player2)
         }
-    }
+
 
 
         // Swap turns
