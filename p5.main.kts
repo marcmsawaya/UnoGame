@@ -45,7 +45,7 @@ fun createUnoDeck(): UnoDeck {
         // One 0 card per suit.
         deckOfUno.add(UnoCard(UnoType.ZERO, color))
         // Two copies of each number card 1–9.
-        for (i in 0..9) {
+        for (i in 1..9) {
             val numType = when (i) {
                 1 -> UnoType.ONE
                 2 -> UnoType.TWO
@@ -129,7 +129,7 @@ fun stringToUnoCard(s: String): UnoCard {
         "8" -> UnoType.EIGHT
         "9" -> UnoType.NINE
         "skip" -> UnoType.SKIP
-        "plus-two", "draw two" -> UnoType.DRAW_TWO
+        "plus-two" -> UnoType.DRAW_TWO
         "reverse" -> UnoType.REVERSE
         "wild" -> UnoType.WILD
         else -> UnoType.WILD_DRAW_FOUR
@@ -150,7 +150,7 @@ fun readUnoCardsFile(path: String): MutableList<UnoCard>) {
         return emptyList()
     }
     
-    val lines = fileReadAsList(filepath)
+    val lines = fileReadAsList(cards.txt)
     return lines.map { stringToUnoCard(it) }
 }
 
@@ -183,7 +183,7 @@ fun isCompleteUnoDeck(cards: MutableList<UnoCard>): Boolean {
 
 
 // A function to “shuffle” a deck; returns a new deck with shuffled cards.
-fun shuffleUnoDeck(deck: MutableMutableList<UnoCard>) {
+fun shuffleUnoDeck(deck: MutableList<UnoCard>): MutableList<UnoCard> {
     deck.shuffle()
     return deck
 }
