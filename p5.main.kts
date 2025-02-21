@@ -76,6 +76,11 @@ fun createunodeck(): UnoDeck {
     return UnoDeck(deckOfUno.toList())
 }
 
+@EnabledTest
+fun testcreateUnoDeck(unsure: T, expectedResult: T, testName: String = "") {
+    testSame(UnoDeck(createunodeck().cards), expectedResult = , "I am expecting a card of type skip and of color red")
+}
+
 // ================================================================
 // 3. Files of Cards
 // ================================================================
@@ -244,79 +249,69 @@ fun SimulatePlayHand(
 
 // Step 5:
 
-fun play(): UnoDeck {
-    val deck = createUnoDeck()  // Create and shuffle the deck
+fun play() = UnoDeck {
+    val deck = createunodeck()
     shuffleUnoDeck(deck.cards)
 
-    // Deal 7 cards to each player
-    val player1 = dealUnoCards(deck, 7).toMutableList()
-    val player2 = dealUnoCards(deck, 7).toMutableList()
+    val player1 = dealUnoCards(deck, 7)
+    val player2 = dealUnoCards(deck, 7)
 
-    // Place the first card on the discard pile
-    val topCard = dealUnoCards(deck, 1)[0]
-    val stack = mutableListOf(topCard)
-
+    val stack = mutableListOf<UnoCard>()
+    stack.add(dealUnoCards(deck, 1)[0])
+    
     var currentPlayer = player1
     var opponent = player2
 
-    while (deck.cards.isNotEmpty() && player1.isNotEmpty() && player2.isNotEmpty()) {
-        val playableCard = currentPlayer.find { isValidPlay(it, stack.last()) }
-
-        if (playableCard != null) {
-            // Play the valid card
-            currentPlayer.remove(playableCard)
-            stack.add(playableCard)
-
-            // Handle special cards
-            when (playableCard.type) {
-                UnoType.SKIP -> {}  // Skip turn (no need to change logic)
-                UnoType.REVERSE -> {
-                    val turn = currentPlayer
-                    currentPlayer = opponent
-                    opponent = turn
-                }
-                UnoType.DRAW_TWO -> {
-                    opponent.addAll(dealUnoCards(deck, 2))
-                }
-                UnoType.WILD -> {}  // Wild color change not needed in simulation
-                UnoType.WILD_DRAW_FOUR -> {
-                    opponent.addAll(dealUnoCards(deck, 4))
-                }
-                else -> {}
-            }
-        } else {
-            // No valid card, draw until a valid one is found
-            while (deck.cards.isNotEmpty()) {
-                // No valid card; draw until a valid one is found, without using break.
-                var validCardFound = false
-                while (deck.cards.isNotEmpty() && !validCardFound) {
-                    val drawnCard = dealUnoCards(deck, 1)[0]
-                    currentPlayer.add(drawnCard)
-    
-                    if (isValidPlay(drawnCard, stack.last())) {
-                        currentPlayer.remove(drawnCard)
-                        stack.add(drawnCard)
-                        validCardFound = true
-                    }
-                }
-    }
-}
-
-
-        // Check win condition
-        if (player1.isEmpty()) {
-            return UnoDeck(player1)
-        } else if (player2.isEmpty()) {
-            return UnoDeck(player2)
+    while (!deck.card.isEmpty() && player1.isNotEmpty() & player2.isNotEmpty()) {
+        val topCard = stack.last()
+        while (!isValidPlay(currentPlayer, stack, topCard)) {
+            currentPlayer.add(dealUnoCards(deck, 1)[0])
         }
 
+        val playableCard = currentPlayer.find { isValidPlay(it, stack, topCard)}
+        if(playable_card == null) {
+            break
+        }
+        currentPlayer.remove(playableCard)
+        stack.add(playableCard)
 
-
-        // Swap turns
-        val turn = currentPlayer
-        currentPlayer = opponent
-        opponent = turn
+        when (playableCard.type) {
+            UnoType.SKIP -> {}
+            UnoType.REVERSE -> {}
+            UnoType.DRAW_TWO -> {
+                opponent = opponent + dealUnoCards(deck, 2)
+                stack.add(UnoCard(UnoType.DRAW_TWO, UnoColor.NONE))
+                val temp = currentPlayer
+                currentPlayer = opponent
+                opponent = team
+            }
+            UnoType.WILD -> {
+                stack.add(UnoCard(UnoType.WILD, UnoColor.NONE))
+                val temp = currentPlayer
+                currentPlayer = opoonent
+                opoonent = temp
+            }
+            UnoType.WILD_DRAW_FOUR -> {
+                opponent = opponent + dealUnoCards(deck, 4)
+                stack.add(UnoCard(UnoType.WILD_DRAW_FOUR, UnoColor.NONE))
+                val temp = currentPlayer
+                currentPlayer = opponent
+                opponent = temp
+            }
+            else -> {
+                val temp = currentPlayer
+                currentPlayer = opponent
+                opponent = temp
+            }
+        }
+        if (player1.isEmpty() || player2.isEmpty()) {
+            break
+        }
     }
 
-    return UnoDeck(emptyList<UnoCard>().toMutableList())  // Return empty deck if no winner (draw)
+    return when {
+        player1.isEmpty() -> UnoDeck(player2)
+        player2.isEmpty() -> UnoDeck(player1)
+        else -> UnoDeck(emptyList())
+    }
 }
